@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { signup } from "../../actions/auth";
+import { signin, authenticate } from "../../actions/auth";
+import Router from "next/router";
 
-const SignupComponent = () => {
-  const [name, setName] = useState("");
+const SigninComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -18,27 +18,17 @@ const SignupComponent = () => {
   const showMessage = () =>
     message ? <div className="alert alert-success">{message}</div> : "";
 
-  const signupForm = () => {
+  const signinForm = () => {
     return (
       <div className="container">
         <br />
-        <h2 className="text-center">Sign Up</h2>
+        <h2 className="text-center">Sign In</h2>
         <br />
         <div className="row justify-content-center">
           <div className="col-md-6">
             <div className="card">
               <article className="card-body rounded ">
                 <form onSubmit={handleSubmit}>
-                  <div className="form-group">
-                    <label>Full Name </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Full Name"
-                      onChange={(e) => setName(e.target.value)}
-                      value={name}
-                    />
-                  </div>
                   <div className="form-group">
                     <label>Email address</label>
                     <input
@@ -48,12 +38,9 @@ const SignupComponent = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       value={email}
                     />
-                    <small className="form-text text-muted">
-                      We'll never share your email with anyone else.
-                    </small>
                   </div>
                   <div className="form-group">
-                    <label>Create password</label>
+                    <label>password</label>
                     <input
                       className="form-control"
                       type="password"
@@ -64,18 +51,14 @@ const SignupComponent = () => {
                   </div>
                   <div className="form-group">
                     <button type="submit" className="btn btn-primary btn-block">
-                      Signup
+                      Signin
                     </button>
                   </div>
-                  <small className="text-muted">
-                    By clicking the 'Sign Up' button, you confirm that you
-                    accept our <br /> Terms of use and Privacy Policy.
-                  </small>
                 </form>
               </article>
               <div className="border-top card-body text-center">
-                Have an account?
-                <a className="btn btn-outline-primary mt-1 ml-2">Log in</a>
+                dont Have an account?
+                <a className="btn btn-outline-primary mt-1 ml-2">Sign up</a>
               </div>
             </div>
           </div>
@@ -88,36 +71,42 @@ const SignupComponent = () => {
     e.preventDefault();
     console.log(`handling the submissionn`);
     setLoading(true);
-    const user = { name, email, password };
-    signup(user)
-      .then((response) => {
-        console.log(`response`, response.data);
-        console.log(`response`, response.error.error);
-        if (response.error) {
-          setErrorMessage(response.error.error);
-          setLoading(false);
-          setError(true);
-        } else {
-          setName("");
-          setEmail("");
-          setPassword("");
-          setErrorMessage("");
-          setMessage(response.message);
-          setError(false);
-          setLoading(false);
-          setShowForm(false);
-        }
-      })
+    const user = { email, password };
+    signin(user).then((response) => {
+      console.log(`response`, response);
+      if (response.error) {
+        setErrorMessage(response.error.error);
+        setLoading(false);
+        setError(true);
+      } else {
+        let { token, user, message } = response.data;
+        console.log(token);
+        console.log(user);
+        console.log(message);
+        //save user token to cookie
+        //save user info to local storage
+        // localStorage.setItem("token", token);
+        // const { name, email, username } = user;
+        // localStorage.setItem("name", name);
+        // localStorage.setItem("email", email);
+        // localStorage.setItem("username", username);
+
+        //authenticate user
+        authenticate(response.data, () => {
+          Router.push("/");
+        });
+      }
+    });
   };
 
   return (
     <div>
       <div className="">
-        {error && showError()} {showLoading()} {showMessage()}
-        {showForm && signupForm()}
+        {showError()} {showLoading()} {showMessage()}
+        {showForm && signinForm()}
       </div>
     </div>
   );
 };
 
-export default SignupComponent;
+export default SigninComponent;

@@ -5,8 +5,8 @@ const expressJwt = require("express-jwt");
 
 //sign up a user
 exports.signup = (req, res) => {
-  //
-  User.findOne({ email: req.body.email }).exec((err, user) => {
+  //check if the email has been registered to a user
+  User.findOne({ email: req.body.email }).exec((error, user) => {
     if (user) {
       return res.status(400).send({ error: "Email is taken" });
     }
@@ -15,12 +15,12 @@ exports.signup = (req, res) => {
     let profile = `${process.env.CLIENT_URL}/profile/${username}`;
 
     let newUser = new User({ name, email, username, password, profile });
-    newUser.save((err, success) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).send({ err: err });
+    newUser.save((error, success) => {
+      if (error) {
+        console.log(error);
+        return res.status(400).send({ error: error });
       }
-      res.send({
+      res.status(201).send({
         message: "Signup successful , please sign in",
         user: newUser,
       });
@@ -33,11 +33,11 @@ exports.signin = (req, res) => {
   //get values of the request
   const { email, password } = req.body;
   //cheeck if user exists
-  User.findOne({ email }).exec((err, user) => {
-    if (err || !user) {
+  User.findOne({ email }).exec((error, user) => {
+    if (error || !user) {
       return res
         .status(400)
-        .send("user with that email does not exist , please Signup");
+        .send({ error: "user with that email does not exist , please Signup" });
     }
     //authenticate
     if (!user.authenticate) {
@@ -49,7 +49,11 @@ exports.signin = (req, res) => {
     });
     res.cookie("token", token, { expiresIn: "1d" });
     const { _id, username, email, role, name } = user;
-    res.send({ user: { _id, username, name, email, role }, token });
+    res.send({
+      user: { _id, username, name, email, role },
+      token,
+      message: "Signin successful ",
+    });
   });
 };
 
@@ -59,8 +63,7 @@ exports.signout = (req, res) => {
   res.send({ message: "Signout successful" });
 };
 
-
 // require signin
 exports.requireSignin = expressJwt({
-  secret :process.env.JWT_SECRET
-})
+  secret: process.env.JWT_SECRET,
+});

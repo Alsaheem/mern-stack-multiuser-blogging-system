@@ -7,6 +7,10 @@ const cookieParser = require(`cookie-parser`);
 const cors = require(`cors`);
 require(`dotenv`).config();
 
+//linking the app routes
+const blogRouter = require("./routes/blog");
+const authRouter = require("./routes/auth");
+
 //app
 const app = express();
 
@@ -20,24 +24,24 @@ mongoose
   })
   .then(() => console.log(`DATABASE CONNECTED ->>`));
 
-//linking the app routes
-const blogRouter = require("./routes/blog");
-const authRouter = require("./routes/auth");
-
-//beinging in the app routes
-app.use(express.json());
-app.use("/api",blogRouter);
-app.use("/api",authRouter);
 
 //middlewares
 app.use(morgan(`dev`));
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 
+
 //cors
+// app.use(cors())
 if (process.env.NODE_ENV == `development`) {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
+  console.log(process.env.CLIENT_URL);
 }
+
+//beinging in the app routes
+app.use("/api",blogRouter);
+app.use("/api", authRouter);
 
 
 //port to run on and listen on
