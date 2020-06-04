@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { signin, authenticate } from "../../actions/auth";
+import React, { useState, useEffect } from "react";
+import { signin, authenticate, isAuthenticated } from "../../actions/auth";
 import Router from "next/router";
+import Link from "next/link";
 
 const SigninComponent = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +11,10 @@ const SigninComponent = () => {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    isAuthenticated() && Router.push("/");
+  }, []);
 
   const showLoading = () =>
     loading ? <div className="alert alert-info">Loading...</div> : "";
@@ -58,7 +63,11 @@ const SigninComponent = () => {
               </article>
               <div className="border-top card-body text-center">
                 dont Have an account?
-                <a className="btn btn-outline-primary mt-1 ml-2">Sign up</a>
+                <Link
+                  href="/signup"
+                >
+                  Sign up
+                </Link>
               </div>
             </div>
           </div>
@@ -80,20 +89,13 @@ const SigninComponent = () => {
         setError(true);
       } else {
         let { token, user, message } = response.data;
-        console.log(token);
-        console.log(user);
-        console.log(message);
-        //save user token to cookie
-        //save user info to local storage
-        // localStorage.setItem("token", token);
-        // const { name, email, username } = user;
-        // localStorage.setItem("name", name);
-        // localStorage.setItem("email", email);
-        // localStorage.setItem("username", username);
-
         //authenticate user
         authenticate(response.data, () => {
-          Router.push("/");
+          if (isAuthenticated() && isAuthenticated().role === 1) {
+            Router.push("/admin");
+          } else {
+            Router.push("/user");
+          }
         });
       }
     });

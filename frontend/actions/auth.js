@@ -1,4 +1,3 @@
-import fetch from "isomorphic-fetch";
 import axios from "axios";
 import { API } from "../config";
 import cookie from "js-cookie";
@@ -86,4 +85,11 @@ export const isAuthenticated = () => {
       }
     }
   }
+};
+
+export const signout = (next) => {
+  removeCookie("token");
+  removeLocalStorage("user");
+  next();
+  return axios.get(`/signout`).then((res) => console.log(res)).catch(error => console.log(error))
 };

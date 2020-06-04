@@ -3,6 +3,7 @@ const shortid = require("shortid");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
 
+
 //sign up a user
 exports.signup = (req, res) => {
   //check if the email has been registered to a user
@@ -67,3 +68,28 @@ exports.signout = (req, res) => {
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
 });
+
+exports.authMiddleware = (req, res, next) => {
+  const authUserId = req.user._id;
+  User.findById({ _id: authUserId }).exec((error, user) => {
+    if (error || !user) {
+      return res.status(400).send({ error: "user not found" });
+    }
+    req.profile = user;
+    next();
+  });
+};
+
+exports.adminMiddleware = (req, res, next) => {
+  const adminUserId = req.user._id;
+  User.findById({ _id: adminUserId }).exec((error, user) => {
+    if (error || !user) {
+      return res.status(400).send({ error: "user not found" });
+    }
+    if (user.role !== 1) {
+      return res.status(400).send({ error: "Admin resource..access denined" });
+    }
+    req.profile = user;
+    next();
+  });
+};

@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     role: {
-      type: String,
-      trim: true,
+      type: Number,
+      default: 0,
     },
     photo: {
       data: Buffer,

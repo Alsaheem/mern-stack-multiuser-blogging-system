@@ -7,7 +7,7 @@ const Footer = () => {
       <footer className="footer mt-auto py-3 bg-secondary">
         <div className="container text-center">
           <span className="text-white ">
-            Place sticky footer content here.
+          Made with <span className="heart">❤</span> by Alsaheem
           </span>
         </div>
       </footer>

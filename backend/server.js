@@ -10,6 +10,9 @@ require(`dotenv`).config();
 //linking the app routes
 const blogRouter = require("./routes/blog");
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
+const categoryRouter = require("./routes/category");
+const tagRouter = require("./routes/tag");
 
 //app
 const app = express();
@@ -42,6 +45,9 @@ if (process.env.NODE_ENV == `development`) {
 //beinging in the app routes
 app.use("/api",blogRouter);
 app.use("/api", authRouter);
+app.use("/api", userRouter);
+app.use("/api", categoryRouter);
+app.use("/api", tagRouter);
 
 
 //port to run on and listen on

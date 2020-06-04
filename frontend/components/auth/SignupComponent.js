@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { signup } from "../../actions/auth";
+import React, { useState ,useEffect} from "react";
+import { signup,isAuthenticated } from "../../actions/auth";
+import Link from "next/link";
+import Router from "next/router";
+
 
 const SignupComponent = () => {
   const [name, setName] = useState("");
@@ -10,6 +13,10 @@ const SignupComponent = () => {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    isAuthenticated()  && Router.push("/")
+  },[])
 
   const showLoading = () =>
     loading ? <div className="alert alert-info">Loading...</div> : "";
@@ -75,7 +82,7 @@ const SignupComponent = () => {
               </article>
               <div className="border-top card-body text-center">
                 Have an account?
-                <a className="btn btn-outline-primary mt-1 ml-2">Log in</a>
+                <Link href="/signin" >Sign in </Link>
               </div>
             </div>
           </div>
@@ -92,7 +99,6 @@ const SignupComponent = () => {
     signup(user)
       .then((response) => {
         console.log(`response`, response.data);
-        console.log(`response`, response.error.error);
         if (response.error) {
           setErrorMessage(response.error.error);
           setLoading(false);
@@ -102,7 +108,7 @@ const SignupComponent = () => {
           setEmail("");
           setPassword("");
           setErrorMessage("");
-          setMessage(response.message);
+          setMessage(response.data.message);
           setError(false);
           setLoading(false);
           setShowForm(false);
