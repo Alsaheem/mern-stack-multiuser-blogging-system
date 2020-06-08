@@ -124,13 +124,14 @@ const Category = (props) => {
               type="text"
               required
               className="form-control"
+              placeholder="input a category name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
             <button className="btn btn-success" type="submit">
-              Create
+              Create category
             </button>
           </div>
         </form>

@@ -119,13 +119,14 @@ const Tag = (props) => {
               type="text"
               required
               className="form-control"
+              placeholder="input a tag name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
             <button className="btn btn-success" type="submit">
-              Create
+              Create tag
             </button>
           </div>
         </form>
