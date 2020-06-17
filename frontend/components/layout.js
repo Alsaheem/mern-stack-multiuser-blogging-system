@@ -1,12 +1,17 @@
 import Header from "./Header";
 import Footer from "./Footer";
+import React, { useContext, createContext } from "react";
+
+const themeContext = createContext("white");
 
 const Layout = ({ children }) => {
   return (
-    <div>
+    <div className="">
       <Header />
-      <div className="">{children}</div>
-      <Footer/>
+      <div>
+        <div className="">{children}</div>
+        <Footer />
+      </div>
     </div>
   );
 };

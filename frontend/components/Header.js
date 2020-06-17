@@ -39,6 +39,13 @@ const Header = (props) => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
+          <NavItem>
+                <Link href="/blogs">
+                  <NavLink className="btn text-capitalize btn-secondary btn-sm text-white">
+                    Blogs
+                  </NavLink>
+                </Link>
+              </NavItem>
             {!isAuthenticated() && (
               <>
                 <NavItem>

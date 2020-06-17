@@ -46,7 +46,7 @@ const blogSchema = new mongoose.Schema(
       ref: "User",
     },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 

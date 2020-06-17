@@ -7,7 +7,8 @@ import { isAuthenticated } from "../../actions/auth";
 import { getCategories } from "../../actions/category";
 import { getTags } from "../../actions/tag";
 import { createBlog } from "../../actions/blog";
-const ReactQuill = dynamic(() => import("react-quill"));
+//const ReactQuill = dynamic(() => import("react-quill"));
+const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
 import "../../node_modules/react-quill/dist/quill.snow.css";
 
 const BlogCreate = ({ router }) => {
@@ -41,13 +42,15 @@ const BlogCreate = ({ router }) => {
       <div className="text-capitalize alert alert-info">Loading...</div>
     ) : (
       ""
-    );
+      );
+
   const showError = () =>
     error ? (
       <div className="text-capitalize alert alert-danger">{errorMessage}</div>
     ) : (
       ""
-    );
+      );
+
   const showMessage = () =>
     success ? (
       <div className="text-capitalize alert alert-success">{message}</div>
@@ -71,6 +74,7 @@ const BlogCreate = ({ router }) => {
       }
     });
   };
+
   const loadTags = () => {
     getTags().then((data) => {
       if (data.error) {
@@ -227,6 +231,7 @@ const BlogCreate = ({ router }) => {
       </form>
     );
   };
+
   return (
     <div>
 
